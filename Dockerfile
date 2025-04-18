@@ -19,7 +19,6 @@ WORKDIR /build
 # Build OpenTripPlanner
 RUN git clone https://github.com/opentripplanner/OpenTripPlanner.git \
     && cd OpenTripPlanner \
-    && git checkout v2.5.0 \
     && mvn clean package -DskipTests
 
 # Build OneBusAway GTFS Transformer CLI
