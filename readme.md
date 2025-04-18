@@ -2,6 +2,7 @@
 
 A Docker‑based workflow to **validate**, **clean**, and **transform** GTFS feeds for use with OpenTripPlanner (OTP). This README walks you through three stages:
 
+
 1. **Validation & Checking** with `runCheck.sh`
 2. **Generating Transformations** via `docker-compose up pipFile`
 3. **Cleanup & Tidy** with `runTidy.sh`
@@ -19,6 +20,8 @@ gtfs2oba-pipeline/
 ```
 
 ---
+
+## 0. Build the image: `sudo docker-compose up build --build`
 
 ## 1. Validation & Checking: `runCheck.sh`
 
