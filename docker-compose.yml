@@ -1,30 +1,13 @@
 version: "3.9"
 
 services:
-  gtfs-validator:
+  build:
+    image: gtfs_container
+    container_name: gtfs_container
     build:
       context: .
       dockerfile: Dockerfile
-    image: gtfs-validator:7.0.0
-    container_name: gtfs-validator
-    volumes:
-      - ./feeds:/feeds        # Mount your GTFS zip files here
-      - ./output:/output      # Output reports will go here
-    command: [
-      "java", "-jar", "gtfs-validator-cli.jar",
-      "-i", "/feeds/your-feed.zip",
-      "-o", "/output"
-    ]
 
-  run:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: gtfs-validator:7.0.0
-    container_name: gtfs-validator
     volumes:
-      - ./feeds:/feeds        # Mount your GTFS zip files here
-      - ./output:/output      # Output reports will go here
-    command: [
-      "tail" ,"-f" ,"/dev/null",
-    ]
+      - ./share:/share
+    command: ["tail", "-f", "/dev/null"]
