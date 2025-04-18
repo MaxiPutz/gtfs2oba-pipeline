@@ -51,7 +51,7 @@ FROM eclipse-temurin:21-jdk AS runtime
 WORKDIR /app
 
 # Copy Java artifacts
-COPY --from=maven-builder /build/OpenTripPlanner/target/otp-2.5.0-shaded.jar     ./otp.jar
+COPY --from=maven-builder /build/OpenTripPlanner/target/otp-2.7.0-shaded.jar     ./otp.jar
 COPY --from=maven-builder \
     build/onebusaway-gtfs-modules/onebusaway-gtfs-transformer-cli/target/onebusaway-gtfs-transformer-cli.jar \
     ./oba-transformer.jar
