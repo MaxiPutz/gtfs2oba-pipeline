@@ -50,6 +50,7 @@ services:
     image: gtfs_container
     volumes:
       - ./share:/app/share
-
-    command: ["java", "-Xmx20G", "-jar", "otp-2.5.0-shaded.jar", "--load", "share/data"]
+    ports:
+      - 8080:8080
+    command: ["java", "-Xmx20G", "-jar", "otp.jar", "--load", "share/data"]
     #RUN java -Xmx8G -jar target/otp-2.5.0-shaded.jar  --build --save data 
