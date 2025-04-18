@@ -1,7 +1,7 @@
 {
     "code": "missing_trip_edge",
     "SNProp": "tripId",
-    "SNValFilter": "74A",
+    "SNValFilter": "",
     "template": {"op":"remove","match":{"file":"trips.txt","trip_id":"%s"}}, 
     "inFile": "./share/report.json",
     "outFile": "./share/modifications.txt"

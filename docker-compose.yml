@@ -9,5 +9,30 @@ services:
       dockerfile: Dockerfile
 
     volumes:
-      - ./share:/share
+      - ./share:/app/share
     command: ["tail", "-f", "/dev/null"]
+
+  valid:
+    image: gtfs_container
+    volumes:
+      - ./share:/app/share
+    command: ["java", "-Xmx7G" , "-jar", "gtfs-validator.jar", "-p" ,"-i", "share/in.gtfs.zip", "-o" ,"share"]
+
+  check:
+    image: gtfs_container
+    volumes:
+      - ./share:/app/share
+    command: ["gtfsPipeline", "-i", "share/report.json"]
+
+  pipFile:
+    image: gtfs_container
+    volumes:
+      - ./share:/app/share
+      - ./config.json:/app/config.json
+    command: ["gtfsPipeline", "-c", "config.json"]
+
+  tidy:
+    image: gtfs_container
+    volumes:
+      - ./share:/app/share
+    command: ["java", "-Xmx7G" , "-jar", "oba-transformer.jar", "--transform=share/modifications.txt" , "share/in.gtfs.zip", "share/tidy.gtfs.zip"]
