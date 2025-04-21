@@ -54,3 +54,23 @@ services:
       - 8080:8080
     command: ["java", "-Xmx20G", "-jar", "otp.jar", "--load", "share/data"]
     #RUN java -Xmx8G -jar target/otp-2.5.0-shaded.jar  --build --save data 
+
+
+  prepare-dev:
+    image: gtfs_container
+    volumes:
+      - ./share:/app/share
+    command: [
+      "sh", "-c",
+      "
+       java -Xmx7G -jar /app/oba-transformer.jar \
+        --transform='{\"op\":\"transform\",\"class\":\"org.onebusaway.gtfs_transformer.impl.RetainUpFromPolygon\",\"polygon\":\"POLYGON((16.324080 48.479458,16.394298 48.473308,16.459683 48.455281,16.515743 48.426618,16.558646 48.389287,16.585482 48.345850,16.594456 48.299277,16.585005 48.252746,16.557821 48.209424,16.514790 48.172252,16.458858 48.143747,16.393822 48.125837,16.324080 48.119729,16.254339 48.125837,16.189303 48.143747,16.133370 48.172252,16.090339 48.209424,16.063155 48.252746,16.053705 48.299277,16.062679 48.345850,16.089514 48.389287,16.132418 48.426618,16.188478 48.455281,16.253862 48.473308,16.324080 48.479458))\"}' \
+        /app/share/in.gtfs.zip \
+        /app/share/in.bbox.gtfs.zip \
+      &&
+      osmosis --read-pbf file=/app/share/data/austria-latest.osm.pbf \
+        --bounding-box top=48.479458 left=16.188478 bottom=48.119729 right=16.459683 \
+        --write-pbf file=/app/share/data/austria-20km-bbox.osm.pbf \
+      && rm /app/share/data/austria-latest.osm.pbf \
+      && mv /app/share/in.bbox.gtfs.zip /app/share/in.gtfs.zip"
+    ]
