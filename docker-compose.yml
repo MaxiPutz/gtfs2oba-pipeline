@@ -35,7 +35,7 @@ services:
     image: gtfs_container
     volumes:
       - ./share:/app/share
-    command: ["java", "-Xmx7G" , "-jar", "oba-transformer.jar", "--transform=share/modifications.txt" , "share/in.gtfs.zip", "share/tidy.gtfs.zip"]
+    command: ["java", "-Xmx7G" , "-jar", "oba-transformer.jar", "--transform=share/modifications.txt" , "share/in.gtfs.zip", "share/data/tidy.gtfs.zip"]
 
   otp-build:
     image: gtfs_container
