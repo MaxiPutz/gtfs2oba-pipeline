@@ -19,6 +19,7 @@ WORKDIR /build
 # Build OpenTripPlanner
 RUN git clone https://github.com/opentripplanner/OpenTripPlanner.git \
     && cd OpenTripPlanner \
+    && git checkout v2.5.0 \
     && mvn clean package -DskipTests
 
 # Build OneBusAway GTFS Transformer CLI
@@ -51,7 +52,7 @@ FROM eclipse-temurin:21-jdk AS runtime
 WORKDIR /app
 
 # Copy Java artifacts
-COPY --from=maven-builder /build/OpenTripPlanner/target/     ./
+COPY --from=maven-builder /build/OpenTripPlanner/target/otp-2.5.0-shaded.jar     ./otp.jar
 COPY --from=maven-builder \
     build/onebusaway-gtfs-modules/onebusaway-gtfs-transformer-cli/target/onebusaway-gtfs-transformer-cli.jar \
     ./oba-transformer.jar
@@ -64,5 +65,6 @@ COPY --from=go-builder /build/gtfs2oba-pipeline/gtfsPipeline /usr/local/bin/gtfs
 RUN mkdir -p /gtfs-validator \
     && wget -qO ./gtfs-validator.jar \
     https://github.com/MobilityData/gtfs-validator/releases/download/v7.0.0/gtfs-validator-7.0.0-cli.jar
+
 
 RUN apt update && apt install osmosis -y

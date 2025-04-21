@@ -28,31 +28,34 @@ services:
     image: gtfs_container
     volumes:
       - ./share:/app/share
-      - ./config.json:/app/config.json
+      - ./config.json:/app/config.json:ro
     command: ["gtfsPipeline", "-c", "config.json"]
 
   tidy:
     image: gtfs_container
     volumes:
       - ./share:/app/share
-    command: ["java", "-Xmx7G" , "-jar", "oba-transformer.jar", "--transform=share/modifications.txt" , "share/in.gtfs.zip", "share/data/tidy.gtfs.zip"]
+    command: ["java", "-Xmx7G" , "-jar", "oba-transformer.jar", "--transform=share/modifications.txt" , "share/in.gtfs.zip", "share/tidy.gtfs.zip"]
 
   otp-build:
     image: gtfs_container
     volumes:
       - ./share:/app/share
-      - ./otp-config.json:/app/share/data/otp-config.json
-
-    command: ["java", "-Xmx20G" , "-jar", "otp.jar", "--build" , "--save", "share/data"]
-    #RUN java -Xmx8G -jar target/otp-2.5.0-shaded.jar  --build --save data 
-
+      - ./otp-config.json:/app/otp-config.json:ro
+    command: [
+      "sh", "-c",
+      "cp /app/otp-config.json /app/share/data/otp-config.json && \
+      java -Xmx7G -jar /app/otp.jar \
+        --build \
+        --save /app/share/data"
+    ]
   otp-start:
     image: gtfs_container
     volumes:
       - ./share:/app/share
     ports:
       - 8080:8080
-    command: ["java", "-Xmx20G", "-jar", "otp.jar", "--load", "share/data"]
+    command: ["java", "-Xmx7G", "-jar", "otp.jar", "--load", "share/data"]
     #RUN java -Xmx8G -jar target/otp-2.5.0-shaded.jar  --build --save data 
 
 
@@ -71,6 +74,6 @@ services:
       osmosis --read-pbf file=/app/share/data/austria-latest.osm.pbf \
         --bounding-box top=48.479458 left=16.188478 bottom=48.119729 right=16.459683 \
         --write-pbf file=/app/share/data/austria-20km-bbox.osm.pbf \
-      && rm /app/share/data/austria-latest.osm.pbf \
+      && rm /app/share/austria-latest.osm.pbf \
       && mv /app/share/in.bbox.gtfs.zip /app/share/in.gtfs.zip"
     ]
